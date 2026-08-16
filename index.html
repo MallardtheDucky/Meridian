@@ -246,12 +246,7 @@
         .room-btn.room-alert { border-color: rgba(255,61,0,0.5); }
         .room-btn.room-alert:hover { border-color: var(--color-red); box-shadow: 0 0 12px rgba(255,61,0,0.2); }
 
-        /* --- Redacted Document Styling ---
-           EVERY redaction in the OS — dossiers, message attachments, archive
-           files, room schematics — is PERMANENTLY sealed. There is no code,
-           clearance, or session key that unseals any of them; a click only
-           ever flashes a brief denial. Text stays unselectable so it can't be
-           grabbed via copy/select either (see revealRedact() in the script). */
+
         .redact {
             background: #000;
             color: #000;
@@ -749,8 +744,6 @@
         }
     ];
 
-    /* Column order for the tabular Chain of Command view (ORG_CHART), grouping
-       every department that appears anywhere in DB_RANKS in a stable reading order. */
     const DB_RANK_DEPARTMENTS = [
         'Command', 'External & Diplomatic Command', 'Rift Dynamics', 'Anomalous Biology',
         'Materials Science', 'Meridian Systems', 'Historical Archives', 'Expeditionary Division',
@@ -1014,9 +1007,6 @@
         }
     ];
 
-    /* The Meridian Archive is built directly from the Faction Template. Every
-       top-level folder corresponds to a template section; the restricted branch
-       holds material the Directorate does not distribute even internally. */
     const DB_FILESYSTEM = {
         'root': { name: 'MERIDIAN_ARCHIVE', type: 'dir', children: [
             'dir_profile', 'dir_hq', 'dir_holdings', 'dir_leadership', 'dir_purpose',
@@ -1146,16 +1136,9 @@
         activeFacility: 'streymoy',
         activeRoom: null,
 
-        /* Local-decryption clearance code. Every .redact span across the OS
-           (documents, room schematics, personnel dossiers) is PERMANENTLY
-           sealed — entering a code never unseals anything; see
-           submitDecryptCode() below. */
         showDecryptPanel: false,
         decryptError: '',
 
-        /* Live telemetry: seeded log + stats that tick forward on an interval
-           once the session is logged in, so SYSTEM_TELEMETRY reads as active
-           rather than a static snapshot. */
         dashboardDetail: null,
         telemetryStats: { processor: 94.2, resonance: 88.6, relay: 76.4 },
         telemetryLog: [
@@ -1167,20 +1150,9 @@
         ]
     };
 
-    /* No decryption code unseals redacted material. This constant is kept only
-       so a curious visitor entering "LATTICE-7" (an old, leaked reference)
-       gets a distinct in-world response from a random guess — but even that
-       code does not actually reveal anything; see submitDecryptCode() below.
-       Distinct from the 99_RESTRICTED folder key (OBSIDIAN), which gates
-       archive folder access rather than individual redactions. */
     const DECRYPT_CODE = 'LATTICE-7';
 
     function update() {
-        // Preserve scroll position (both vertical AND horizontal) of every
-        // tracked scrollable pane across the full re-render (innerHTML
-        // replacement would otherwise reset them all back to the top-left,
-        // which is why scrolling down/sideways used to "jump" back -
-        // most visibly on SYSTEM_TELEMETRY, which re-renders every 3.5s).
         const scrollPos = {};
         document.querySelectorAll('[data-scroll-id]').forEach(el => {
             scrollPos[el.getAttribute('data-scroll-id')] = { top: el.scrollTop, left: el.scrollLeft };
@@ -1195,12 +1167,7 @@
         });
     }
 
-    /* ==========================================================================
-       LIVE TELEMETRY ENGINE
-       Ticks the SYSTEM_TELEMETRY stats and diagnostic log forward on an
-       interval so the dashboard reads as an active feed rather than a static
-       snapshot, whether or not the window is currently open.
-       ========================================================================== */
+/
     const TELEMETRY_LOG_TEMPLATES = [
         () => `SYNCHRONIZING WITH CRYSTALLINE SUBSYSTEM 0x${Math.floor(Math.random()*16).toString(16).toUpperCase().padStart(2,'0')}... OK`,
         () => `PHOTONIC ARRAY CALIBRATION CYCLE COMPLETE`,
@@ -1318,9 +1285,7 @@
         state.resizeState = { id, startX: e.clientX, startY: e.clientY, initW: win.w, initH: win.h };
     };
 
-    /* ==========================================================================
-       RENDER PIPELINE
-       ========================================================================== */
+
     function render() {
         const root = document.getElementById('app-root');
         
@@ -1497,9 +1462,6 @@
        APP: RANKS (CHAIN OF COMMAND)
        ========================================================================== */
 
-    // Builds a plaque + flanking code-cylinder insignia block for a given rank.
-    // `scale` is a maximum/preferred scale; it is automatically reduced for wide
-    // plaques (many tiles/cylinders) so high-tier insignia never clips its frame.
     function renderPlaque(rank, scale) {
         const tileHtml = (colors) => colors.map(c => `<div class="p-tile p-tile-${c}"></div>`).join('');
         const cylCount = rank.cylinders || 0;
@@ -1530,12 +1492,6 @@
             </div>`;
     }
 
-    /* Sealed Personnel Dossier: a scanned-paper style record reserved for the
-       handful of designations whose real identity the Directorate itself
-       compartmentalizes. Currently only the Executive Director's file is
-       displayed this way. Like every .redact span in the OS, its redactions
-       are permanently sealed — a click only ever produces a brief denial
-       flash (see revealRedact()). */
     const DB_DOSSIERS = {
         r2: {
             status: 'ACTIVE — IDENTITY SEALED',
@@ -2004,9 +1960,6 @@
         </div>`;
     }
 
-    /* ==========================================================================
-       APP: ARCHIVE, DASHBOARD, MESSAGES (Unchanged largely structurally)
-       ========================================================================== */
     
     function renderArchiveApp() {
         const currentDir = DB_FILESYSTEM[state.archivePath[state.archivePath.length - 1]];
@@ -2115,9 +2068,6 @@
         }
     };
 
-    /* Every .redact span in the OS is permanently sealed. A click never
-       reveals anything — it only ever flashes a brief denial. There is no
-       code, session, or clearance level that unseals redacted content. */
     window.revealRedact = function(el) {
         el.classList.add('denied');
         setTimeout(() => el.classList.remove('denied'), 500);
@@ -2129,10 +2079,6 @@
         update();
     };
 
-    /* No code entered here ever unseals anything — redactions are permanent.
-       This always reports denial; the LATTICE-7 reference gets a distinct
-       message purely as in-world flavor (it's an old, leaked designation),
-       but it does not unlock redacted content either. */
     window.submitDecryptCode = function() {
         const input = document.getElementById('decrypt-input');
         if (!input) return;
@@ -2285,9 +2231,6 @@
     function renderDashboardApp() {
         const ts = state.telemetryStats;
 
-        /* Anomaly containment capacity, built directly from DB_ANOMALIES so
-           the chart always reflects the same figures the ANOMALY_REGISTRY
-           terminal reports. 'Unlimited' classes render as a full, uncapped bar. */
         const anomalyBars = DB_ANOMALIES.map(a => {
             const m = a.limit.match(/(\d+)\s*\/\s*(\d+)/);
             const held = m ? parseInt(m[1], 10) : 0;
