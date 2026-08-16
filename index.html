@@ -4,7 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meridian Directorate | Photonic Workstation Environment</title>
-    
+
+    <!-- ==========================================================================
+         Social link preview (Open Graph / Twitter Card)
+         When this page's URL is shared (Discord, Slack, GitHub repo description
+         link, X/Twitter, etc.) these tags control the title/description/image
+         shown in the preview card. og:image points at social-preview.png, which
+         must sit next to this index.html in the same repo/deploy.
+         IMPORTANT: og:image and og:url below use a relative/placeholder path.
+         Per the OG spec these should be absolute URLs for maximum compatibility
+         with link-preview crawlers — once this is deployed (e.g. GitHub Pages),
+         replace REPLACE_WITH_YOUR_DEPLOY_URL below with your real site URL,
+         e.g. https://yourusername.github.io/your-repo/
+         ========================================================================== -->
+    <meta name="description" content="Independent. Unlisted. Founded 2009 from what could be salvaged of the ██████████████ before the Culling took the rest. The Meridian Directorate hasn't stopped counting the Rifts that keep getting bigger. Clearance required beyond this point.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Meridian Directorate // Photonic Workstation Environment">
+    <meta property="og:title" content="MERIDIAN DIRECTORATE ▓▓ ACCESS: SEALED">
+    <meta property="og:description" content="Independent. Unlisted. Founded 2009 from what could be salvaged of the ██████████████ before the Culling took the rest. The Directorate hasn't stopped counting the Rifts that keep getting bigger. Clearance required beyond this point.">
+    <meta property="og:image" content="REPLACE_WITH_YOUR_DEPLOY_URL/social-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="REPLACE_WITH_YOUR_DEPLOY_URL/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MERIDIAN DIRECTORATE ▓▓ ACCESS: SEALED">
+    <meta name="twitter:description" content="Independent. Unlisted. Still counting the Rifts that keep getting bigger. Clearance required beyond this point.">
+    <meta name="twitter:image" content="REPLACE_WITH_YOUR_DEPLOY_URL/social-preview.png">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -237,20 +263,20 @@
         .room-btn.room-alert:hover { border-color: var(--color-red); box-shadow: 0 0 12px rgba(255,61,0,0.2); }
 
         /* --- Redacted Document Styling ---
-           Redactions are sealed everywhere until the LATTICE-7 decryption code
-           is entered via the global decrypt panel. Clicking an individual
-           redaction never reveals it by itself (no more "pop up suddenly" per
-           span) — it only flashes a denial while sealed. Once #app-root carries
-           the .decrypted class, every redaction across the whole OS reveals
-           together with a deliberate fade-in, all at once. */
+           EVERY redaction in the OS — dossiers, message attachments, archive
+           files, room schematics — is PERMANENTLY sealed. There is no code,
+           clearance, or session key that unseals any of them; a click only
+           ever flashes a brief denial. Text stays unselectable so it can't be
+           grabbed via copy/select either (see revealRedact() in the script). */
         .redact {
             background: #000;
             color: #000;
             padding: 0 3px;
             border-radius: 1px;
             cursor: pointer;
-            transition: color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
             box-shadow: inset 0 0 0 1px #1a1a1a;
+            -webkit-user-select: none;
+            user-select: none;
         }
         .redact:hover { box-shadow: inset 0 0 0 1px var(--color-red); }
         @keyframes denyFlash {
@@ -258,20 +284,6 @@
             50% { box-shadow: inset 0 0 0 2px var(--color-red); background: rgba(255,61,0,0.25); }
         }
         .redact.denied { animation: denyFlash 0.5s ease; }
-
-        @keyframes decryptIn {
-            0% { color: #000; background: #000; box-shadow: inset 0 0 0 1px #1a1a1a; }
-            40% { color: var(--color-cyan); background: rgba(0,229,255,0.12); box-shadow: inset 0 0 0 1px var(--color-cyan); }
-            100% { color: var(--color-red); background: rgba(255,61,0,0.08); box-shadow: inset 0 0 0 1px rgba(255,61,0,0.4); }
-        }
-        /* Once decrypted, every .redact span in the entire OS reveals together. */
-        #app-root.decrypted .redact,
-        .dossier-sheet.decrypted .redact {
-            cursor: text;
-            animation: decryptIn 0.9s ease forwards;
-        }
-        #app-root.decrypted .redact:hover,
-        .dossier-sheet.decrypted .redact:hover { box-shadow: inset 0 0 0 1px rgba(255,61,0,0.4); }
         .doc-stamp {
             position: absolute;
             top: 14px; right: -6px;
@@ -402,8 +414,47 @@
             border: 1px solid var(--color-panel-border);
             border-top: none;
             background: #010304;
-            padding: 12px;
+            padding: 10px;
+        }
+
+        /* --- Attachment Document Sheet (scanned-paper case-file look,
+           matching the Sealed Personnel Dossier styling) --- */
+        .doc-sheet {
+            background: #cfcac2;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0px, transparent 1px, transparent 2px),
+                radial-gradient(circle at 20% 15%, rgba(255,255,255,0.25), transparent 60%);
+            color: #17140f;
             font-family: 'Share Tech Mono', monospace;
+            padding: 16px;
+            position: relative;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.12);
+            border: 1px solid #8a8377;
+        }
+        .doc-sheet .redact { box-shadow: inset 0 0 0 1px #000; }
+        .doc-sheet-header {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #17140f;
+        }
+        .doc-sheet-field-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #55503f; }
+        .doc-sheet-field-value { font-size: 12px; font-weight: bold; color: #17140f; word-break: break-word; }
+        .doc-sheet-body { font-size: 12px; line-height: 1.6; }
+        .doc-sheet-footer {
+            margin-top: 14px;
+            padding-top: 8px;
+            border-top: 1px solid #8a8377;
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #55503f;
+            text-align: center;
+        }
+        @media (max-width: 767px) {
+            .doc-sheet-header { grid-template-columns: 1fr 1fr; }
         }
 
         /* --- Mobile / Small Viewport Adjustments --- */
@@ -1114,10 +1165,10 @@
         activeFacility: 'streymoy',
         activeRoom: null,
 
-        /* Local-decryption clearance code. Individual .redact spans throughout
-           the OS (documents, room schematics, personnel dossiers) stay sealed
-           until this code is entered, regardless of which window they appear in. */
-        codeUnlocked: false,
+        /* Local-decryption clearance code. Every .redact span across the OS
+           (documents, room schematics, personnel dossiers) is PERMANENTLY
+           sealed — entering a code never unseals anything; see
+           submitDecryptCode() below. */
         showDecryptPanel: false,
         decryptError: '',
 
@@ -1135,10 +1186,12 @@
         ]
     };
 
-    /* The decryption code that unlocks every sealed (.redact) span across the
-       OS. Distinct from the 99_RESTRICTED folder key (OBSIDIAN) — that one
-       gates the archive itself; this one gates the individually redacted
-       phrases inside documents, dossiers, and room schematics. */
+    /* No decryption code unseals redacted material. This constant is kept only
+       so a curious visitor entering "LATTICE-7" (an old, leaked reference)
+       gets a distinct in-world response from a random guess — but even that
+       code does not actually reveal anything; see submitDecryptCode() below.
+       Distinct from the 99_RESTRICTED folder key (OBSIDIAN), which gates
+       archive folder access rather than individual redactions. */
     const DECRYPT_CODE = 'LATTICE-7';
 
     function update() {
@@ -1300,7 +1353,6 @@
             return;
         }
 
-        root.classList.toggle('decrypted', state.codeUnlocked);
         root.innerHTML = `
             ${renderDesktop()}
             ${state.windows.filter(w => w.open).map(renderWindow).join('')}
@@ -1375,9 +1427,7 @@
                 </div>
             `).join('')}
             
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none">
-                <i data-lucide="hexagon" style="width: 600px; height: 600px;"></i>
-            </div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none" style="width: 600px; height: 600px; background-color: #00e5ff; -webkit-mask-image: url('images/Median Logo.png'); -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; mask-image: url('images/Median Logo.png'); mask-size: contain; mask-repeat: no-repeat; mask-position: center;"></div>
         </div>`;
     }
 
@@ -1399,9 +1449,9 @@
             </div>
             
             <div class="flex items-center gap-3 md:gap-6 h-full text-[10px] font-mono-tech text-[var(--color-cyan-dim)] shrink-0">
-                <button onclick="toggleDecryptPanel()" title="Local decryption" class="flex items-center gap-1.5 px-2 py-1 border ${state.codeUnlocked ? 'border-[var(--color-cyan)] text-[var(--color-cyan)]' : 'border-[var(--color-panel-border)] text-[var(--color-text-dim)] hover:text-[var(--color-cyan)]'} transition-colors">
-                    <i data-lucide="${state.codeUnlocked ? 'unlock' : 'lock'}" class="w-3 h-3"></i>
-                    <span class="hidden md:inline">${state.codeUnlocked ? 'DECRYPTED' : 'SEALED'}</span>
+                <button onclick="toggleDecryptPanel()" title="Local decryption — redactions are permanent" class="flex items-center gap-1.5 px-2 py-1 border border-[var(--color-panel-border)] text-[var(--color-text-dim)] hover:text-[var(--color-cyan)] transition-colors">
+                    <i data-lucide="lock" class="w-3 h-3"></i>
+                    <span class="hidden md:inline">SEALED</span>
                 </button>
                 <div class="hidden lg:flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-[var(--color-cyan)] animate-pulse"></span>
@@ -1502,7 +1552,9 @@
     /* Sealed Personnel Dossier: a scanned-paper style record reserved for the
        handful of designations whose real identity the Directorate itself
        compartmentalizes. Currently only the Executive Director's file is
-       displayed this way. */
+       displayed this way. Like every .redact span in the OS, its redactions
+       are permanently sealed — a click only ever produces a brief denial
+       flash (see revealRedact()). */
     const DB_DOSSIERS = {
         r2: {
             status: 'ACTIVE — IDENTITY SEALED',
@@ -1537,7 +1589,7 @@
                     <div class="dossier-photo shrink-0"></div>
                 </div>
                 <div class="text-[10px] uppercase tracking-widest mb-1" style="color:#55503f;">Special Handling</div>
-                <div class="text-xs leading-relaxed mb-3 whitespace-pre-wrap">Access to this file is restricted to the Directorate Council and Security &amp; Information Division leadership. Sections rendered as solid black bars remain sealed; local decryption clearance is required to view them.</div>
+                <div class="text-xs leading-relaxed mb-3 whitespace-pre-wrap">Access to this file is restricted to the Directorate Council and Security &amp; Information Division leadership. Sections rendered as solid black bars are permanently sealed at Council order — no clearance, code, or session decryption will ever unseal them from this terminal.</div>
                 <div class="text-[10px] uppercase tracking-widest mb-1" style="color:#55503f;">Description</div>
                 <div class="text-xs leading-relaxed whitespace-pre-wrap">${d.body}</div>
             </div>
@@ -1991,7 +2043,7 @@
                             <i data-lucide="arrow-left" class="w-3 h-3"></i> <span class="hidden sm:inline">BACK TO FOLDER</span>
                         </button>
                     </div>
-                    ${isRestrictedDoc ? `<div class="doc-header-block font-mono-tech">CLASSIFICATION: OMEGA &bull; DISTRIBUTION: DIRECTORATE COUNCIL AUTHORIZATION ONLY<br>Sections rendered as solid bars remain sealed. Enter a local decryption code (taskbar, lower right) to unseal them for this session.</div>` : ''}
+                    ${isRestrictedDoc ? `<div class="doc-header-block font-mono-tech">CLASSIFICATION: OMEGA &bull; DISTRIBUTION: DIRECTORATE COUNCIL AUTHORIZATION ONLY<br>Sections rendered as solid bars are permanently sealed at Council order. No clearance code unseals them.</div>` : ''}
                     <div class="text-[var(--color-text-dim)] whitespace-pre-wrap text-sm leading-relaxed">${file.content}</div>
                 </div>`;
         }
@@ -2082,17 +2134,12 @@
         }
     };
 
-    /* Gates every .redact span in the OS. Redactions never reveal from an
-       individual click anymore — sealed spans just flash a denial. The only
-       way to reveal anything is entering the LATTICE-7 code in the global
-       decrypt panel, which reveals every redaction across the whole OS at
-       once (see the #app-root.decrypted rule and submitDecryptCode below). */
+    /* Every .redact span in the OS is permanently sealed. A click never
+       reveals anything — it only ever flashes a brief denial. There is no
+       code, session, or clearance level that unseals redacted content. */
     window.revealRedact = function(el) {
-        if (!state.codeUnlocked) {
-            el.classList.add('denied');
-            setTimeout(() => el.classList.remove('denied'), 500);
-        }
-        // Already decrypted: nothing to do, the span is already revealed.
+        el.classList.add('denied');
+        setTimeout(() => el.classList.remove('denied'), 500);
     };
 
     window.toggleDecryptPanel = function() {
@@ -2101,18 +2148,18 @@
         update();
     };
 
+    /* No code entered here ever unseals anything — redactions are permanent.
+       This always reports denial; the LATTICE-7 reference gets a distinct
+       message purely as in-world flavor (it's an old, leaked designation),
+       but it does not unlock redacted content either. */
     window.submitDecryptCode = function() {
         const input = document.getElementById('decrypt-input');
         if (!input) return;
         const val = input.value.trim().toUpperCase();
-        if (val === DECRYPT_CODE) {
-            state.codeUnlocked = true;
-            state.showDecryptPanel = false;
-            state.decryptError = '';
-        } else {
-            state.decryptError = 'INVALID CODE';
-            input.value = '';
-        }
+        state.decryptError = (val === DECRYPT_CODE)
+            ? 'CODE RECOGNIZED — REDACTIONS ARE PERMANENT'
+            : 'ACCESS DENIED';
+        input.value = '';
         update();
     };
 
@@ -2124,7 +2171,7 @@
                 <span class="text-[10px] text-[var(--color-cyan)] uppercase tracking-widest">Local Decryption</span>
                 <button onclick="toggleDecryptPanel()" class="text-[var(--color-text-dim)] hover:text-[var(--color-red)]"><i data-lucide="x" class="w-3 h-3"></i></button>
             </div>
-            <div class="text-[9px] text-[var(--color-text-dim)] mb-2 leading-relaxed">Enter a clearance decryption code to unseal redacted material across all open terminals for this session.</div>
+            <div class="text-[9px] text-[var(--color-text-dim)] mb-2 leading-relaxed">Redacted material is permanently sealed at Council order. No clearance code unseals it from this terminal.</div>
             <input id="decrypt-input" type="text" placeholder="CODE" autocomplete="off" onkeypress="if(event.key === 'Enter') submitDecryptCode()" class="w-full bg-black border border-[var(--color-cyan-dim)] text-[var(--color-cyan)] px-2 py-1.5 text-xs font-mono-tech mb-2 uppercase tracking-widest" />
             <button onclick="submitDecryptCode()" class="w-full border border-[var(--color-cyan)] text-[var(--color-cyan)] py-1.5 text-[10px] uppercase tracking-widest hover:bg-[var(--color-cyan)] hover:text-black transition-colors">Decrypt</button>
             <div class="text-[9px] text-[var(--color-red)] mt-2 h-3 uppercase">${state.decryptError}</div>
@@ -2406,9 +2453,26 @@
                                     <i data-lucide="${isOpen ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5 text-[var(--color-cyan-dim)] shrink-0"></i>
                                 </div>
                                 ${isOpen ? `
-                                <div class="attachment-viewer text-xs text-[var(--color-text-dim)] whitespace-pre-wrap leading-relaxed relative">
-                                    <div class="doc-stamp" style="top: 8px; right: 8px;">${att.classification}</div>
-                                    ${att.content}
+                                <div class="attachment-viewer">
+                                    <div class="doc-sheet">
+                                        <div class="doc-stamp" style="top: 10px; right: -4px;">${att.classification}</div>
+                                        <div class="doc-sheet-header">
+                                            <div>
+                                                <div class="doc-sheet-field-label">Classification</div>
+                                                <div class="doc-sheet-field-value">${att.classification}</div>
+                                            </div>
+                                            <div>
+                                                <div class="doc-sheet-field-label">File ID</div>
+                                                <div class="doc-sheet-field-value" style="font-size:10px;">${att.name}</div>
+                                            </div>
+                                            <div>
+                                                <div class="doc-sheet-field-label">Origin</div>
+                                                <div class="doc-sheet-field-value" style="font-size:10px;">${selected.from}</div>
+                                            </div>
+                                        </div>
+                                        <div class="doc-sheet-body whitespace-pre-wrap">${att.content}</div>
+                                        <div class="doc-sheet-footer">This document may not be shared with or accessed by personnel below the designated clearance level</div>
+                                    </div>
                                 </div>` : ''}
                             </div>`;
                         }).join('')}
