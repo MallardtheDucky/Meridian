@@ -4,19 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meridian Directorate | Photonic Workstation Environment</title>
-
-    <!-- ==========================================================================
-         Social link preview (Open Graph / Twitter Card)
-         When this page's URL is shared (Discord, Slack, GitHub repo description
-         link, X/Twitter, etc.) these tags control the title/description/image
-         shown in the preview card. og:image points at social-preview.png, which
-         must sit next to this index.html in the same repo/deploy.
-         IMPORTANT: og:image and og:url below use a relative/placeholder path.
-         Per the OG spec these should be absolute URLs for maximum compatibility
-         with link-preview crawlers — once this is deployed (e.g. GitHub Pages),
-         replace REPLACE_WITH_YOUR_DEPLOY_URL below with your real site URL,
-         e.g. https://yourusername.github.io/your-repo/
-         ========================================================================== -->
     <meta name="description" content="Independent. Unlisted. Founded 2009 from what could be salvaged of the ██████████████ before the Culling took the rest. The Meridian Directorate hasn't stopped counting the Rifts that keep getting bigger. Clearance required beyond this point.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Meridian Directorate // Photonic Workstation Environment">
@@ -31,13 +18,10 @@
     <meta name="twitter:description" content="Independent. Unlisted. Still counting the Rifts that keep getting bigger. Clearance required beyond this point.">
     <meta name="twitter:image" content="REPLACE_WITH_YOUR_DEPLOY_URL/social-preview.png">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -493,9 +477,6 @@
     <div id="app-root" class="w-full h-screen relative bg-grid"></div>
 
 <script>
-    /* ==========================================================================
-       LORE DATA & FILE SYSTEM
-       ========================================================================== */
     
     const DB_TIER_LABELS = {
         1: 'TIER 1 // APEX COMMAND',
@@ -1468,7 +1449,7 @@
         </div>`;
     }
 
-    /* --- WINDOW MANAGER --- */
+    /* WINDOW MANAGER*/
     function renderWindow(win) {
         let content = '';
         switch(win.id) {
