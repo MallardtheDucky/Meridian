@@ -246,7 +246,6 @@
         .room-btn.room-alert { border-color: rgba(255,61,0,0.5); }
         .room-btn.room-alert:hover { border-color: var(--color-red); box-shadow: 0 0 12px rgba(255,61,0,0.2); }
 
-
         .redact {
             background: #000;
             color: #000;
@@ -1167,7 +1166,6 @@
         });
     }
 
-/
     const TELEMETRY_LOG_TEMPLATES = [
         () => `SYNCHRONIZING WITH CRYSTALLINE SUBSYSTEM 0x${Math.floor(Math.random()*16).toString(16).toUpperCase().padStart(2,'0')}... OK`,
         () => `PHOTONIC ARRAY CALIBRATION CYCLE COMPLETE`,
@@ -1284,7 +1282,6 @@
         if (!win || win.maximized) return;
         state.resizeState = { id, startX: e.clientX, startY: e.clientY, initW: win.w, initH: win.h };
     };
-
 
     function render() {
         const root = document.getElementById('app-root');
@@ -1451,7 +1448,6 @@
             ${!win.maximized ? `<div class="resize-handle" onmousedown="startResize(event, '${win.id}')" title="Drag to resize"></div>` : ''}
         </div>`;
     }
-
     window.toggleMax = function(id) {
         const win = state.windows.find(w => w.id === id);
         win.maximized = !win.maximized;
