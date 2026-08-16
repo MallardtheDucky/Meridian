@@ -50,7 +50,6 @@
             font-family: 'Share Tech Mono', monospace;
         }
 
-        /* --- CRT Effects --- */
         .scanlines {
             background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,255,0.03), rgba(0,0,255,0.06));
             background-size: 100% 4px, 3px 100%;
@@ -64,13 +63,11 @@
             z-index: 9999;
         }
 
-        /* --- Custom Scrollbar --- */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--color-panel); border-left: 1px solid var(--color-panel-border); }
         ::-webkit-scrollbar-thumb { background: var(--color-cyan-dim); border: 1px solid var(--color-bg); }
         ::-webkit-scrollbar-thumb:hover { background: var(--color-cyan); }
 
-        /* --- Animations --- */
         @keyframes flicker {
             0% { opacity: 1; } 3% { opacity: 0.4; } 6% { opacity: 1; } 7% { opacity: 0.4; } 9% { opacity: 1; } 100% { opacity: 1; }
         }
@@ -101,7 +98,6 @@
             opacity: 0.3;
         }
 
-        /* --- UI Elements --- */
         .tech-border {
             border: 1px solid var(--color-panel-border);
             position: relative;
@@ -160,7 +156,6 @@
 
         input:focus { outline: none; }
 
-        /* Rank Insignia Specifics */
         .insignia-pip {
             box-shadow: inset 0 0 5px rgba(0,0,0,0.8), 0 0 4px currentColor;
         }
@@ -170,7 +165,6 @@
         .insignia-blue { color: #2962ff; background-color: #0d205f; border: 1px solid #2962ff; }
         .insignia-dark { color: #548b99; background-color: #1a2c33; border: 1px solid #2c4d59; }
 
-        /* --- Rank Plaque & Code Cylinder System --- */
         .plaque-container {
             display: flex;
             align-items: center;
@@ -229,7 +223,6 @@
         .code-cylinder.cyl-amber::after { background: var(--color-amber); box-shadow: 0 0 4px var(--color-amber); }
         .code-cylinder.cyl-red::after { background: var(--color-red); box-shadow: 0 0 4px var(--color-red); }
 
-        /* --- Facility Map Room Buttons --- */
         .room-btn {
             position: relative;
             text-align: left;
@@ -279,7 +272,6 @@
             pointer-events: none;
             z-index: 20;
         }
-        /* --- Sealed Personnel Dossier (scanned-paper document look) --- */
         .dossier-sheet {
             background: #cfcac2;
             background-image:
@@ -312,7 +304,6 @@
         .dossier-field-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #55503f; }
         .dossier-field-value { font-size: 13px; font-weight: bold; color: #17140f; }
 
-        /* --- Global Decryption Code Widget --- */
         .decrypt-panel {
             position: fixed;
             bottom: 46px; right: 12px;
@@ -332,7 +323,6 @@
             color: var(--color-text-dim);
         }
 
-        /* --- COMMS_RELAY Message Styling --- */
         .classify-badge {
             display: inline-block;
             padding: 2px 7px;
@@ -395,8 +385,6 @@
             padding: 10px;
         }
 
-        /* --- Attachment Document Sheet (scanned-paper case-file look,
-           matching the Sealed Personnel Dossier styling) --- */
         .doc-sheet {
             background: #cfcac2;
             background-image:
@@ -435,7 +423,6 @@
             .doc-sheet-header { grid-template-columns: 1fr 1fr; }
         }
 
-        /* --- Mobile / Small Viewport Adjustments --- */
         @media (max-width: 767px) {
             .window {
                 border-width: 1px;
@@ -463,11 +450,9 @@
 </head>
 <body>
 
-    <!-- CRT Overlays -->
     <div class="fixed inset-0 scanlines"></div>
     <div class="fixed inset-0 crt-vignette"></div>
 
-    <!-- Main Container -->
     <div id="app-root" class="w-full h-screen relative bg-grid"></div>
 
 <script>
@@ -483,7 +468,6 @@
     };
 
     const DB_RANKS = [
-        /* ---------------- TIER 1: APEX COMMAND ---------------- */
         {
             id: 'r1', title: 'Directorate Council', tier: 1, department: 'Command', clearance: 'Omega', address: 'Councilor',
             desc: 'The absolute governing body of the Meridian, composed of senior administrators, founding researchers, and surviving former Commission personnel who escaped the Culling. The Council rarely meets in person; most sessions are conducted via encrypted crystalline relay between Streymoy and undisclosed secondary locations. They set research priorities, approve or veto contact with outside organizations, and hold sole authority to invoke the standing directive: "The Meridian must survive, even if its members do not."',
@@ -499,7 +483,6 @@
             plaqueTop: ['blue','blue','blue','amber','amber','amber'], plaqueBottom: ['blue','blue','blue','red','red','red'], cylinders: 4
         },
 
-        /* ---------------- TIER 2: DIVISION LEADERSHIP ---------------- */
         {
             id: 'r3', title: 'Director, Department of Rift Dynamics', tier: 2, department: 'Rift Dynamics', clearance: 'Level 5', address: 'Director',
             desc: 'Oversees all study of Rift formation, behavior, duration, and geographic distribution. Since the late 2020s this office has become the most-watched seat on the Council\'s briefing schedule, as its models are the primary source for the Directorate\'s central concern: the accelerating size and duration of new manifestations.',
@@ -557,7 +540,6 @@
             plaqueTop: ['dark','dark','red','red','dark'], cylinders: 2
         },
 
-        /* ---------------- TIER 3: DEPUTY & ASSISTANT DIRECTORS ---------------- */
         {
             id: 'r20', title: 'Deputy Executive Director', tier: 3, department: 'External & Diplomatic Command', clearance: 'Level 5', address: 'Deputy Director',
             desc: 'Acts in the Executive Director\'s name across the front-organization network when the Director is in transit, in closed session with the Council, or otherwise unreachable. The Deputy holds full signing authority over front-organization matters but cannot independently approve Continuance contact.',
@@ -622,7 +604,6 @@
             plaqueTop: ['dark','red','dark','dark'], cylinders: 1
         },
 
-        /* ---------------- TIER 4: SENIOR SPECIALISTS ---------------- */
         {
             id: 'r11', title: 'Senior Researcher', tier: 4, department: 'Advanced Research', clearance: 'Level 4', address: 'Researcher',
             desc: 'Leads individual research initiatives within Rift Dynamics, Anomalous Biology, or Materials Science under the authority of their Division Director. Senior Researchers interpret raw telemetry from photonic and crystalline systems, draft the Directorate\'s internal white papers, and are typically the most senior scientist physically present during a controlled anomaly test.',
@@ -659,7 +640,6 @@
             plaqueTop: ['dark','dark','dark'], cylinders: 1
         },
 
-        /* ---------------- TIER 5: OPERATIONAL SPECIALISTS ---------------- */
         {
             id: 'r30', title: 'Researcher', tier: 5, department: 'Advanced Research', clearance: 'Level 3', address: 'Researcher',
             desc: 'A fully qualified scientist running their own experiment queue under a Senior Researcher\'s supervision. Sits between the entry-level Field Researcher and the project-leading Senior Researcher, and is usually the one actually at the bench when a controlled anomaly test happens.',
@@ -696,7 +676,6 @@
             plaqueTop: ['dark','dark'], cylinders: 0
         },
 
-        /* ---------------- TIER 6: FIELD & OPERATIONAL PERSONNEL ---------------- */
         {
             id: 'r15', title: 'Field Researcher', tier: 6, department: 'Advanced Research', clearance: 'Level 3', address: 'Researcher',
             desc: 'The backbone of the Meridian\'s scientific work. Conducts primary observation, sample collection, and controlled experimentation under the supervision of a Senior Researcher, and is usually the first Meridian scientist to lay eyes on a newly opened long-duration Rift.',
@@ -733,7 +712,6 @@
             plaqueTop: ['blue'], cylinders: 0
         },
 
-        /* ---------------- TIER 7: SUPPORT & ASSOCIATE STAFF ---------------- */
         {
             id: 'r19', title: 'Associate / Trainee', tier: 7, department: 'General Assignment', clearance: 'Level 2', address: 'By given name',
             desc: 'Administrative staff, junior technicians, and newly recruited personnel still completing compartmentalization training. The vast majority of the Meridian\'s roughly 30,000 personnel sit at or near this tier, and most never learn which front organization, if any, they actually serve.',
@@ -758,8 +736,6 @@
         { class: 'Class 6', limit: '0 / 1', items: [] }
     ];
 
-    /* Facility Map: one entry per Meridian holding. Each holding is broken into
-       structural Levels, and each Level contains a set of clickable Rooms. */
     const DB_FACILITIES = {
         'streymoy': {
             id: 'streymoy', name: 'Streymoy Headquarters', shortName: 'STREYMOY HQ',
@@ -1013,17 +989,14 @@
             'dir_public_status', 'dir_technology', 'dir_philosophy', 'dir_continuance', 'restricted'
         ] },
 
-        /* ---- 01: FACTION PROFILE ---- */
         'dir_profile': { name: '01_FACTION_PROFILE', type: 'dir', children: ['profile_file'] },
         'profile_file': { name: 'PROFILE.TXT', type: 'file', content:
             'FACTION NAME: The Meridian Directorate for Anomalous Research\nABBREVIATION/ALIAS: The Meridian Directorate // The Meridian\nFACTION TYPE: Independent Organization\nRIFTBORN VARIANT: No\nFOUNDED: 2009\n\nHEADQUARTERS: Streymoy, Faroe Islands. See 02_HEADQUARTERS for full record.\n\nPERSONNEL: Approximately 30,000, including researchers, engineers, medical specialists, archivists, expedition staff, security personnel, intelligence personnel, administrative employees, and personnel operating under Meridian front organizations. Only a portion of these personnel are aware they work for the Meridian at all; many believe they work for ordinary scientific institutions, private research companies, medical organizations, or government contractors.\n\nSee 04_LEADERSHIP, 05_PURPOSE, and 09_ORGANIZATIONAL_STRUCTURE for governance, mission, and division records.' },
 
-        /* ---- 02: HEADQUARTERS ---- */
         'dir_hq': { name: '02_HEADQUARTERS', type: 'dir', children: ['hq_file'] },
         'hq_file': { name: 'STREYMOY_HQ.TXT', type: 'file', content:
             'STREYMOY HEADQUARTERS\nLocation: Streymoy, Faroe Islands\n\nThe organization\'s principal administrative and research facility. Located beneath a seemingly ordinary North Atlantic atmospheric research station, it contains the Directorate\'s central administration, primary laboratories, historical archives, advanced computing systems, and senior research staff.\n\nThe Directorate\'s geographic isolation provides security while still allowing relatively easy access to Europe and the North Atlantic, a balance the founders considered essential when selecting the site in 2009. From Streymoy, the Meridian gradually developed the network of legitimate scientific institutions, shell corporations, academic partnerships, and research foundations that let it operate without revealing its true existence.\n\nFor a full structural breakdown by level and room, consult the FACILITY_SCHEMATICS terminal.' },
 
-        /* ---- 03: HOLDINGS ---- */
         'dir_holdings': { name: '03_HOLDINGS', type: 'dir', children: ['holdings_overview', 'holding_iceland', 'holding_newfoundland', 'holding_scotland'] },
         'holdings_overview': { name: '00_OVERVIEW.TXT', type: 'file', content:
             'ESTABLISHED HOLDINGS (beyond Streymoy HQ)\n\n1. Meridian North Atlantic Station — Iceland\n2. Meridian Newfoundland Facility — Newfoundland and Labrador\n3. Meridian Field Station — Scotland, United Kingdom\n\nEach holding operates under a legitimate cover identity and reports back to Streymoy through the Directorate\'s encrypted crystalline relay network. To the outside world these are separate organizations; to the Meridian, they are simply different pieces of the same network. See individual holding files for detail, or the FACILITY_SCHEMATICS terminal for room-level schematics.' },
@@ -1034,27 +1007,22 @@
         'holding_scotland': { name: '03_SCOTLAND_FIELD_STATION.TXT', type: 'file', content:
             'MERIDIAN FIELD STATION\nLocation: Scotland, United Kingdom\n\nA smaller European research and expedition facility used for anomalous research, equipment development, academic cooperation, and liaison with universities and independent researchers. It also provides logistical support for Meridian personnel traveling throughout Europe.' },
 
-        /* ---- 04: LEADERSHIP ---- */
         'dir_leadership': { name: '04_LEADERSHIP', type: 'dir', children: ['leadership_file'] },
         'leadership_file': { name: 'LEADERSHIP.TXT', type: 'file', content:
             'The Meridian is governed by a small Directorate Council composed of senior researchers, administrators, and surviving former Commission personnel. The Council oversees major policy, research priorities, security, and any relations with outside organizations.\n\nA current Executive Director acts as the public and diplomatic representative of the organization when necessary, although very few people outside the Meridian know their true identity.\n\nThe Directorate Council operates under a strict principle:\n\n"The Meridian must survive, even if its members do not."\n\nFor full rank structure below Council level, consult the CHAIN_OF_COMMAND terminal.' },
 
-        /* ---- 05: PURPOSE ---- */
         'dir_purpose': { name: '05_PURPOSE', type: 'dir', children: ['purpose_file'] },
         'purpose_file': { name: 'PURPOSE.TXT', type: 'file', content:
             'The Meridian Directorate exists to independently study Rifts and anomalous phenomena. Its primary objective is to understand the Rifts, their relationship with other realities, and their effects on Earth and the people on Earth.\n\nThe Directorate believes humanity has become too focused on containing anomalies without properly understanding them. It therefore prioritizes observation, research, controlled experimentation, and long-term study of the anomalies.\n\nIts greatest current concern is the increasing size and duration of Rifts observed throughout the late 2020s and early 2030s. The Meridian believes this may represent a fundamental and sudden change in the relationship between Earth and the realities within the Rifts.\n\nUNPUBLISHED SECONDARY PURPOSE:\nThe Meridian also exists to prevent anomalous knowledge from falling into the wrong hands. This objective is not publicly acknowledged, even within most of the organization itself.' },
 
-        /* ---- 06: SIGNIFICANT ASSETS ---- */
         'dir_assets': { name: '06_SIGNIFICANT_ASSETS', type: 'dir', children: ['assets_file'] },
         'assets_file': { name: 'SIGNIFICANT_ASSETS.TXT', type: 'file', content:
             '1. ADVANCED RESEARCH DIVISION\nExceptional scientific personnel, laboratories, analytical systems, and research infrastructure dedicated to anomalous phenomena.\n\n2. ADVANCED ENGINEERING DIVISION\nExtensive experience developing specialized equipment, adapting to Rift-derived materials, constructing research systems, and combining anomalous discoveries with technology.\n\n3. EXPEDITIONARY LOGISTICS\nThe personnel, transportation, equipment, and logistical infrastructure necessary to conduct long-duration research expeditions through dangerous or remote Rift environments.' },
 
-        /* ---- 07: ANOMALY REGISTRY ---- */
         'dir_registry': { name: '07_ANOMALY_REGISTRY', type: 'dir', children: ['registry_file'] },
         'registry_file': { name: 'REGISTRY_SUMMARY.TXT', type: 'file', content:
             'ANOMALY REGISTRY — HOLDING LIMITS (STARTING AUTHORIZATION)\n\nClass 1: Unlimited\nClass 2: 0 / 5\nClass 3: 0 / 3\nClass 4: 0 / 2\nClass 5: 0 / 1\nClass 6: 0 / 1\n\nThe Meridian does not necessarily believe every anomaly should be destroyed — see 12_CONTAINMENT_PHILOSOPHY. For the live, itemized registry of anomalies currently catalogued under each classification, consult the ANOMALY_REGISTRY terminal directly.' },
 
-        /* ---- 08: HISTORY ---- */
         'dir_history': { name: '08_HISTORY', type: 'dir', children: ['history_origins', 'history_founding', 'history_expansion', 'history_present'] },
         'history_origins': { name: '01_ORIGINS.TXT', type: 'file', content:
             'The origins of the Meridian Directorate trace to the final decades of the Commission. Among the Commission\'s many divisions was a group of researchers dedicated to studying the deeper patterns behind Rift manifestations, rather than simply cataloguing or containing individual anomalies.\n\nThese researchers began to suspect that Rifts were not isolated events. Similarities between seemingly unrelated manifestations, anomalous materials, biological phenomena, and historical records suggested something larger connecting them. The research remained classified within the Commission.\n\nThen came the Brooklyn Exposure of June 22, 2007: a Rift in Prospect Park released roughly 173 stone-bodied entities that killed more than 10,000 people before military force finally ended the incident. Two centuries of classified agreements had left every institution capable of responding without the authority to act, and those with authority lacked the information. The Masquerade could not survive it.' },
@@ -1065,32 +1033,26 @@
         'history_present': { name: '04_PRESENT_DAY.TXT', type: 'file', content:
             'In the current year, the Meridian has become a large but almost entirely invisible organization operating beneath the surface of the post-Disclosure world. Governments know unexplained research facilities exist, and scientists occasionally encounter Meridian researchers, but almost nobody realizes these incidents are connected.\n\nThe Directorate\'s foremost concern is the trend first flagged across 2029-2032: Rifts are growing larger and lasting longer, for reasons nobody has been able to determine. See 05_PURPOSE and the Department of Rift Dynamics entry in 09_ORGANIZATIONAL_STRUCTURE.' },
 
-        /* ---- 09: ORGANIZATIONAL STRUCTURE ---- */
         'dir_structure': { name: '09_ORGANIZATIONAL_STRUCTURE', type: 'dir', children: ['structure_file'] },
         'structure_file': { name: 'STRUCTURE.TXT', type: 'file', content:
             'The Meridian is organized into the following major divisions:\n\nDIRECTORATE COUNCIL\nGoverning body. Oversees major policy, funding, research priorities, and external relations.\n\nDEPARTMENT OF RIFT DYNAMICS\nStudies Rift formation, behavior, duration, and geographic distribution.\n\nDEPARTMENT OF ANOMALOUS BIOLOGY\nStudies Riftborn biology, anomalous organisms, ecosystems, diseases, and biological materials.\n\nDEPARTMENT OF MATERIALS SCIENCE\nStudies Rift materials and their potential applications in technology and industry.\n\nMERIDIAN SYSTEMS\nResponsible for computing infrastructure, communications, data analysis, and experimental computer systems.\n\nHISTORICAL ARCHIVES DIVISION\nMaintains recovered Commission records and investigates historical Rift events, including incidents predating Disclosure.\n\nEXPEDITIONARY DIVISION\nConducts field research, exploration, sample recovery, and investigation of newly discovered Rifts and Exclusion Zones.\n\nSECURITY AND INFORMATION DIVISION\nProtects Meridian personnel, facilities, research, and identities; manages compartmentalization and cover identities.\n\nEXTERNAL OPERATIONS DIVISION\nMaintains the Meridian\'s network of front organizations, shell companies, academic institutions, contractors, and contacts.\n\nFor personnel ranks within each division, consult the CHAIN_OF_COMMAND terminal.' },
 
-        /* ---- 10: PUBLIC STATUS ---- */
         'dir_public_status': { name: '10_PUBLIC_STATUS', type: 'dir', children: ['public_status_file'] },
         'public_status_file': { name: 'PUBLIC_STATUS.TXT', type: 'file', content:
             'The Meridian Directorate is not publicly known to exist as an organization. The wider scientific community occasionally encounters Meridian-funded research facilities or personnel, but these activities are attributed to legitimate scientific institutions and private organizations.\n\nThe Meridian deliberately maintains several layers of separation between itself and the outside world. All the different shell organizations can ultimately trace their funding, personnel, or research back to the Meridian, but very few people know the full chain.\n\nSome governments are aware that an unidentified organization appears to be operating several anomalous research facilities worldwide. Some intelligence agencies refer to it as "Meridian," though there is no universally accepted confirmation that this is its actual name.\n\nThe Continuance almost certainly knows more. The Meridian considers this acceptable. See 13_THE_CONTINUANCE.' },
 
-        /* ---- 11: TECHNOLOGY ---- */
         'dir_technology': { name: '11_TECHNOLOGY', type: 'dir', children: ['technology_file'] },
         'technology_file': { name: 'TECHNOLOGY.TXT', type: 'file', content:
             'The Meridian is particularly recognizable for its unconventional computing technology. Its laboratories combine advanced 2032 computing with experimental materials, some sourced from the Rifts: photonic processors, crystalline data systems, and highly specialized computing machines.\n\nMeridian technology has a distinctive retro-futuristic appearance. Computers are often retrofitted, analog-heavy, and resemble 1980s CRT terminals rather than conventional modern technology, though they are slightly more powerful than their appearance suggests. The analog housing is not an aesthetic affectation — it acts as a hardware buffer, shielding the crystalline subsystems from the data corruption that plagues conventional systems processing anomalous telemetry.\n\nThe systems are specifically designed to process anomalous data, allowing Meridian researchers to identify complex patterns in Rift activity that conventional systems may overlook.' },
 
-        /* ---- 12: CONTAINMENT PHILOSOPHY ---- */
         'dir_philosophy': { name: '12_CONTAINMENT_PHILOSOPHY', type: 'dir', children: ['philosophy_file'] },
         'philosophy_file': { name: 'PHILOSOPHY.TXT', type: 'file', content:
             'The Meridian does not consider itself a containment organization, although it maintains containment facilities throughout its network.\n\nThe Meridian philosophy is simple: if an anomaly is dangerous and cannot be safely studied in the open, it must be isolated. Some anomalies are transferred to secure Meridian facilities. Others are monitored in their natural environments. Some are deliberately hidden from governments and corporations.\n\nThe Meridian does not necessarily believe every anomaly should be destroyed — in many cases, destroying an anomaly before understanding it could eliminate valuable information.' },
 
-        /* ---- 13: THE CONTINUANCE ---- */
         'dir_continuance': { name: '13_THE_CONTINUANCE', type: 'dir', children: ['continuance_file'] },
         'continuance_file': { name: 'CONTINUANCE_RELATIONS.TXT', type: 'file', content:
             'The Meridian maintains an uneasy relationship with the Continuance. Both organizations possess fragments of anomalous knowledge accumulated before Disclosure, but their philosophies differ: the Meridian seeks to understand and expand upon the knowledge it holds, while the Continuance appears primarily concerned with preserving and controlling it.\n\nThe two organizations occasionally cooperate when circumstances require it, particularly when investigating historically significant anomalies. However, both remain suspicious of the other\'s motives and quietly compete for access to old Commission archives and anomalous discoveries.\n\nThe Meridian suspects the Continuance knows more about the origins of Rifts than it admits. Further assessment is restricted; see 99_RESTRICTED if cleared.' },
 
-        /* ---- RESTRICTED ---- */
         'restricted': { name: '99_RESTRICTED', type: 'restricted_dir', children: ['commission_legacy', 'continuance_intel', 'council_directive', 'kashmir_assessment', 'brooklyn_afteraction', 'origin_fragment'] },
         'commission_legacy': { name: 'THE_CULLING_LOGS.DEC', type: 'file', content:
             'CLASSIFICATION: OMEGA\nSOURCE: Recovered analog fragments, origin unconfirmed\nCUSTODIAN: Archivist Prime\n\nRecords recovered from the ashes of the Commission following the Culling.\n\n[DATA CORRUPTED] ...governments demanded information. The removal of senior Commission personnel was systematic — first for knowing, then for lying about knowing. We took what we could before the archives disappeared entirely, including <span class="redact" onclick="revealRedact(this)">a partial personnel roster from the Streymoy founding cell</span> and <span class="redact" onclick="revealRedact(this)">correspondence naming three still-active government contacts</span>. We must never allow the Meridian to suffer the same fate. Secrecy is survival.\n\n[FRAGMENT ENDS]' },
@@ -1106,9 +1068,6 @@
             'CLASSIFICATION: OMEGA\nSOURCE: Newfoundland materials transfer, ledger fragment, authenticity under review\nCUSTODIAN: Archivist Prime\n\nPartial ledger, recordkeeping style consistent with pre-1908 Inquiry practice. Referenced location and circumstances of the 1806 incident remain <span class="redact" onclick="revealRedact(this)">a coastal settlement, name illegible, tentatively cross-referenced against three candidate sites in northern Europe</span>.\n\nMost significant line, translated: "...the manifestation does not close, only quiets. We have watched it quiet before." The implication — that whatever opened in 1806 was already being observed by someone prior to that date — has not been resolved. <span class="redact" onclick="revealRedact(this)">Cross-reference against Continuance-held material has been formally requested twice and declined twice.</span>\n\nPending Council review before wider circulation, even within Historical Archives.' }
     };
 
-    /* ==========================================================================
-       STATE MANAGEMENT & ENGINE
-       ========================================================================== */
     const state = {
         booted: false,
         loggedIn: false,
@@ -1216,18 +1175,12 @@
         const win = state.windows.find(w => w.id === id);
         if (win) {
             win.open = !win.open;
-            // On phones/narrow viewports, free-floating draggable windows don't
-            // make sense - every window opens full-screen instead, and the
-            // taskbar becomes the app switcher.
             if (win.open && isMobileViewport()) win.maximized = true;
             if (win.open) bringToFront(id);
             else update();
         }
     }
 
-    /* ==========================================================================
-       DRAG AND DROP LOGIC
-       ========================================================================== */
     document.addEventListener('mousemove', (e) => {
         if (state.resizeState) {
             const win = state.windows.find(w => w.id === state.resizeState.id);
@@ -1267,7 +1220,7 @@
     window.startDrag = function(e, id) {
         if (e.target.closest('.win-controls')) return;
         bringToFront(id);
-        if (isMobileViewport()) return; // windows are locked full-screen on mobile
+        if (isMobileViewport()) return;
         const win = state.windows.find(w => w.id === id);
         if (win.maximized) return;
         state.dragState = { id, startX: e.clientX, startY: e.clientY, initWinX: win.x, initWinY: win.y };
@@ -1276,7 +1229,7 @@
     window.startResize = function(e, id) {
         e.stopPropagation();
         e.preventDefault();
-        if (isMobileViewport()) return; // windows are locked full-screen on mobile
+        if (isMobileViewport()) return;
         bringToFront(id);
         const win = state.windows.find(w => w.id === id);
         if (!win || win.maximized) return;
@@ -1305,7 +1258,6 @@
         lucide.createIcons();
     }
 
-    /* --- LOGIN & BOOT --- */
     function renderLogin() {
         return `
         <div class="w-full h-full flex flex-col items-center justify-center relative">
@@ -1357,7 +1309,6 @@
         </div>`;
     }
 
-    /* --- DESKTOP & TASKBAR --- */
     function renderDesktop() {
         return `
         <div class="absolute inset-0 p-3 pt-6 md:p-4 md:pt-8 flex flex-row md:flex-col flex-wrap gap-4 md:gap-6 items-start content-start z-0 overflow-y-auto pb-16">
@@ -1411,7 +1362,6 @@
         </div>`;
     }
 
-    /* WINDOW MANAGER*/
     function renderWindow(win) {
         let content = '';
         switch(win.id) {
@@ -1425,7 +1375,6 @@
 
         return `
         <div id="win-${win.id}" class="window ${win.maximized ? 'maximized' : ''}" style="left: ${win.x}px; top: ${win.y}px; width: ${win.w}px; height: ${win.h}px; z-index: ${win.zIndex};" onmousedown="bringToFront('${win.id}')">
-            <!-- Header -->
             <div class="window-header h-10 md:h-8 flex items-center justify-between px-2 shrink-0 select-none" onmousedown="startDrag(event, '${win.id}')">
                 <div class="flex items-center gap-2 text-[var(--color-cyan)] font-mono-tech text-xs font-bold min-w-0">
                     <i data-lucide="${win.icon}" class="w-4 h-4 shrink-0"></i>
@@ -1440,7 +1389,6 @@
                     </button>
                 </div>
             </div>
-            <!-- Content -->
             <div class="flex-1 overflow-hidden relative bg-[var(--color-bg)]">
                 <div class="absolute inset-0 pointer-events-none scanner-line"></div>
                 ${content}
@@ -1454,9 +1402,6 @@
         update();
     };
 
-    /* ==========================================================================
-       APP: RANKS (CHAIN OF COMMAND)
-       ========================================================================== */
 
     function renderPlaque(rank, scale) {
         const tileHtml = (colors) => colors.map(c => `<div class="p-tile p-tile-${c}"></div>`).join('');
@@ -1466,7 +1411,6 @@
         const cylClass = rank.tier === 1 ? 'cyl-red' : (rank.tier <= 4 ? '' : 'cyl-amber');
         const cylHtml = (n) => Array(n).fill(`<div class="code-cylinder ${cylClass}"></div>`).join('');
         const tileCount = Math.max((rank.plaqueTop || []).length, (rank.plaqueBottom || []).length);
-        // Approximate rendered width in px (tile 20 + gap 5, cylinder 10 + gap 5, plus padding/gaps) to keep wide plaques from overflowing their frame.
         const approxWidth = (tileCount * 25) + (cylCount * 15) + 60;
         const maxScale = scale || 1;
         const fitScale = Math.min(maxScale, 260 / approxWidth) ;
@@ -1534,8 +1478,6 @@
         update();
     };
 
-    // Tabular "Chain of Command" matrix: tier bands (rows) x department (columns),
-    // each populated cell showing the rank title and its Addressing Protocol.
     function renderRanksTable() {
         const tiers = [1, 2, 3, 4, 5, 6, 7];
         const cellFor = (tier, dept) => DB_RANKS.find(r => r.tier === tier && r.department === dept);
@@ -1600,7 +1542,6 @@
             return `<div class="w-full h-full flex flex-col">${viewTabs}<div class="flex-1 min-h-0">${renderRanksTable()}</div></div>`;
         }
 
-        // Group ranks by tier, in tier order, to produce the ranked hierarchy list.
         let lastTier = null;
         const listHtml = DB_RANKS.map(rank => {
             const isSel = rank.id === state.selectedRank;
@@ -1634,7 +1575,6 @@
 
                 <div class="flex flex-col lg:flex-row gap-8 mb-8">
                     
-                    <!-- Insignia Display: Rank Plaque + Code Cylinders -->
                     <div class="w-full lg:w-[320px] shrink-0 flex flex-col gap-2">
                         <div class="text-[10px] text-[var(--color-cyan-dim)] uppercase tracking-widest text-center">Rank Plaque &amp; Code Cylinders</div>
                         <div class="min-h-[130px] bg-black border border-[var(--color-panel-border)] flex items-center justify-center p-4 relative shadow-[inset_0_0_20px_#000] overflow-hidden">
@@ -1651,7 +1591,6 @@
                         </div>
                     </div>
 
-                    <!-- Details -->
                     <div class="flex-1 flex flex-col gap-6 min-w-0">
                         <div>
                             <div class="text-[10px] text-[var(--color-cyan)] bg-[var(--color-panel-border)] px-2 py-1 uppercase mb-2 inline-block">Role & Directives</div>
@@ -1667,7 +1606,6 @@
 
                 ${renderPersonnelDossier(selected)}
 
-                <!-- Privileges -->
                 <div class="flex-1">
                     <div class="text-[10px] text-[var(--color-amber)] border-b border-[var(--color-amber)] opacity-50 pb-1 mb-3 uppercase tracking-widest">System & Command Privileges</div>
                     <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1707,9 +1645,6 @@
         </div>`;
     }
 
-    /* ==========================================================================
-       APP: FACILITY MAP
-       ========================================================================== */
     function findRoom(facilityId, roomName) {
         const fac = DB_FACILITIES[facilityId];
         if (!fac) return null;
@@ -1739,14 +1674,13 @@
     function statusColorClass(status) {
         if (status === 'ACTIVE') return 'text-[var(--color-cyan)]';
         if (status === 'LOCKED') return 'text-[var(--color-amber)]';
-        return 'text-[var(--color-red)]'; // RESTRICTED / CRITICAL
+        return 'text-[var(--color-red)]';
     }
 
     function renderMapApp() {
         const facility = DB_FACILITIES[state.activeFacility];
         const roomLookup = state.activeRoom ? findRoom(state.activeFacility, state.activeRoom) : null;
 
-        /* --- Sidebar: facility list --- */
         const listHtml = Object.keys(DB_FACILITIES).map(key => {
             const fac = DB_FACILITIES[key];
             const isActive = state.activeFacility === key;
@@ -1762,7 +1696,6 @@
             `;
         }).join('');
 
-        /* --- Room detail overlay --- */
         let overlayHtml = '';
         if (roomLookup) {
             const { room, level } = roomLookup;
@@ -1779,7 +1712,6 @@
                 </div>
 
                 <div class="flex-1 overflow-y-auto custom-scrollbar grid grid-cols-1 md:grid-cols-3 gap-6" data-scroll-id="map-room-overlay">
-                    <!-- Left: mini blueprint -->
                     <div class="col-span-1 border border-[var(--color-panel-border)] bg-black relative p-4 flex flex-col items-center justify-center min-h-[180px]">
                         <div class="absolute top-2 left-2 text-[9px] text-[var(--color-cyan-dim)] opacity-60">SCHEMATIC_RENDER</div>
                         <div class="absolute inset-0 bg-grid opacity-10 pointer-events-none"></div>
@@ -1795,7 +1727,6 @@
                         </div>
                     </div>
 
-                    <!-- Right: data -->
                     <div class="col-span-1 md:col-span-2 flex flex-col gap-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div class="border border-[var(--color-panel-border)] bg-[var(--color-panel)] p-3">
@@ -1836,12 +1767,10 @@
             </div>`;
         }
 
-        /* --- Main facility view: level-by-level room grid --- */
         const mainHtml = facility ? `
             <div class="flex-1 h-full relative overflow-hidden bg-[#03070b]">
                 ${overlayHtml}
                 <div class="h-full overflow-y-auto custom-scrollbar p-4 md:p-6" data-scroll-id="map-main">
-                    <!-- Facility Header -->
                     <div class="border border-[var(--color-panel-border)] bg-[var(--color-panel)] p-4 mb-6 relative overflow-hidden">
                         <div class="absolute inset-0 bg-grid opacity-10 pointer-events-none"></div>
                         <div class="relative z-10 flex flex-col md:flex-row md:justify-between md:items-end gap-3">
@@ -1864,7 +1793,6 @@
                         <div class="relative z-10 text-sm text-[var(--color-text-dim)] leading-relaxed mt-3 pt-3 border-t border-[var(--color-panel-border)]">${facility.desc}</div>
                     </div>
 
-                    <!-- Levels -->
                     <div class="space-y-8">
                         ${facility.levels.map(level => `
                             <div class="relative pl-4 border-l-2 border-dashed border-[var(--color-panel-border)]">
@@ -1893,7 +1821,6 @@
 
         return `
         <div class="w-full h-full flex flex-col md:flex-row font-mono-tech bg-black">
-            <!-- Sidebar -->
             <div class="w-full md:w-64 md:shrink-0 flex flex-col bg-[#04080c] border-b md:border-b-0 md:border-r border-[var(--color-panel-border)]">
                 <div class="bg-[var(--color-panel)] p-3 md:p-4 border-b border-[var(--color-cyan-dim)]">
                     <div class="text-xs text-[var(--color-cyan)] tracking-widest font-bold">FACILITY UPLINK</div>
@@ -1904,14 +1831,10 @@
                 </div>
             </div>
             
-            <!-- Main Content -->
             ${mainHtml}
         </div>`;
     }
 
-    /* ==========================================================================
-       APP: ANOMALY REGISTRY
-       ========================================================================== */
     function renderRegistryApp() {
         return `
         <div class="w-full h-full flex flex-col bg-black p-4 font-mono-tech">
@@ -1978,7 +1901,6 @@
                 </div>`;
         }
 
-        // Breadcrumb trail: each prior segment is clickable, giving a full "back to any previous page" mechanic.
         const breadcrumbHtml = state.archivePath.map((k, i) => {
             const isLast = i === state.archivePath.length - 1;
             const label = i === 0 ? 'ROOT' : (DB_FILESYSTEM[k]?.name || k);
@@ -2046,7 +1968,6 @@
         update();
     };
 
-    // Goes back exactly one level (parent directory) - the primary "previous page" mechanic.
     window.archiveBack = function() {
         if (state.archivePath.length > 1) {
             state.archivePath.pop();
@@ -2055,7 +1976,6 @@
         }
     };
 
-    // Jumps directly back to any earlier breadcrumb segment.
     window.archiveJumpTo = function(index) {
         if (index >= 0 && index < state.archivePath.length - 1) {
             state.archivePath = state.archivePath.slice(0, index + 1);
@@ -2112,7 +2032,6 @@
         }
     };
 
-    // Metadata for the telemetry gauge detail overlay (keyed to state.telemetryStats).
     const DB_GAUGE_INFO = {
         processor: {
             label: 'Systems / Processor Load', colorVar: '--color-cyan',
@@ -2157,8 +2076,6 @@
         update();
     };
 
-    // Renders the click-through detail overlay shown over the telemetry
-    // dashboard when a gauge, facility card, or anomaly bar is selected.
     function renderDashboardDetailOverlay() {
         const d = state.dashboardDetail;
         if (!d) return '';
@@ -2206,7 +2123,6 @@
         </div>`;
     }
 
-    // Small reusable radial-style gauge card for the telemetry dashboard.
     function renderGaugeCard(label, value, sublabel, colorVar, key) {
         const pct = Math.max(0, Math.min(100, value));
         return `
@@ -2432,7 +2348,6 @@
         </div>`;
     }
 
-    /* Initialize */
     render();
 </script>
 </body>
