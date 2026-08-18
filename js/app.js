@@ -63,7 +63,7 @@ function update() {
         const win = state.windows.find(w => w.id === id);
         if (win) {
             win.open = !win.open;
-            if (!win.open && id === 'anomaly-an5001') stopAllCassettes();
+            if (!win.open && id === 'anomaly-an3001') stopAllCassettes();
             if (win.open && isMobileViewport()) win.maximized = true;
             if (win.open) bringToFront(id);
             else update();
@@ -260,7 +260,7 @@ function update() {
             case 'dashboard': content = renderDashboardApp(); break;
             case 'messages': content = renderMessagesApp(); break;
             case 'registry': content = renderRegistryApp(); break;
-            case 'anomaly-an5001': content = renderAnomalyAN5001(); break;
+            case 'anomaly-an3001': content = renderAnomalyAN3001(); break;
         }
 
         return `
@@ -904,15 +904,15 @@ function update() {
         </div>`;
     }
 
-    const AN5001_AUDIO_ID = 'an5001-log-4';
-    const AN5001_SOURCE_FILE = 'audio/The Chordettes Lollipop (Featured In The Movie SMILE) (Remastered).mp3';
-    let an5001Ctx = null, an5001Analyser = null;
-    let an5001Live = null;
-    let an5001RafId = null, an5001BeepTimer = null, an5001TickTimer = null;
-    let an5001SourceBuffer = null;
-    let an5001Volume = 0.8;
+    const AN3001_AUDIO_ID = 'an3001-log-4';
+    const AN3001_SOURCE_FILE = 'audio/The Chordettes Lollipop (Featured In The Movie SMILE) (Remastered).mp3';
+    let an3001Ctx = null, an3001Analyser = null;
+    let an3001Live = null;
+    let an3001RafId = null, an3001BeepTimer = null, an3001TickTimer = null;
+    let an3001SourceBuffer = null;
+    let an3001Volume = 0.8;
 
-    function an5001MakeNoiseBuffer(ctx, seconds) {
+    function an3001MakeNoiseBuffer(ctx, seconds) {
         const len = Math.floor(ctx.sampleRate * seconds);
         const buf = ctx.createBuffer(1, len, ctx.sampleRate);
         const data = buf.getChannelData(0);
@@ -920,7 +920,7 @@ function update() {
         return buf;
     }
 
-    function an5001DistortionCurve(amount) {
+    function an3001DistortionCurve(amount) {
         const n = 4096;
         const curve = new Float32Array(n);
         for (let i = 0; i < n; i++) {
@@ -930,7 +930,7 @@ function update() {
         return curve;
     }
 
-    function an5001HardClipCurve() {
+    function an3001HardClipCurve() {
         const n = 1024;
         const curve = new Float32Array(n);
         for (let i = 0; i < n; i++) {
@@ -940,15 +940,15 @@ function update() {
         return curve;
     }
 
-    async function an5001LoadSourceBuffer(ctx) {
-        if (an5001SourceBuffer) return an5001SourceBuffer;
-        const resp = await fetch(AN5001_SOURCE_FILE);
+    async function an3001LoadSourceBuffer(ctx) {
+        if (an3001SourceBuffer) return an3001SourceBuffer;
+        const resp = await fetch(AN3001_SOURCE_FILE);
         const arrayBuffer = await resp.arrayBuffer();
-        an5001SourceBuffer = await ctx.decodeAudioData(arrayBuffer);
-        return an5001SourceBuffer;
+        an3001SourceBuffer = await ctx.decodeAudioData(arrayBuffer);
+        return an3001SourceBuffer;
     }
 
-    function an5001ExtractSlice(buffer, startSec, durSec, reverse) {
+    function an3001ExtractSlice(buffer, startSec, durSec, reverse) {
         const sr = buffer.sampleRate;
         const totalLen = buffer.length;
         let startSample = Math.floor(startSec * sr);
@@ -957,7 +957,7 @@ function update() {
         if (startSample >= totalLen || lenSamples <= 4) return null;
         if (startSample + lenSamples > totalLen) lenSamples = totalLen - startSample;
         if (lenSamples <= 4) return null;
-        const out = an5001Ctx.createBuffer(buffer.numberOfChannels, lenSamples, sr);
+        const out = an3001Ctx.createBuffer(buffer.numberOfChannels, lenSamples, sr);
         for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
             const srcData = buffer.getChannelData(ch);
             const dstData = out.getChannelData(ch);
@@ -968,7 +968,7 @@ function update() {
         return out;
     }
 
-    function an5001MakeBitcrusher(ctx, crushState) {
+    function an3001MakeBitcrusher(ctx, crushState) {
         const bufferSize = 4096;
         const node = ctx.createScriptProcessor(bufferSize, 2, 2);
         const holdVal = [0, 0];
@@ -991,18 +991,18 @@ function update() {
         return node;
     }
 
-    async function an5001BuildGraph(ctx) {
+    async function an3001BuildGraph(ctx) {
         const master = ctx.createGain();
         master.gain.value = 0;
         const volumeGain = ctx.createGain();
-        volumeGain.gain.value = an5001Volume;
+        volumeGain.gain.value = an3001Volume;
         master.connect(volumeGain);
         volumeGain.connect(ctx.destination);
         const analyser = ctx.createAnalyser();
         analyser.fftSize = 256;
         master.connect(analyser);
 
-        const buffer = await an5001LoadSourceBuffer(ctx);
+        const buffer = await an3001LoadSourceBuffer(ctx);
         const now = ctx.currentTime;
         const nodes = [];
 
@@ -1020,7 +1020,7 @@ function update() {
         mainSrc.loop = false;
         wowGain.connect(mainSrc.detune);
         flutterGain.connect(mainSrc.detune);
-        mainSrc.onended = an5001HandleEnded;
+        mainSrc.onended = an3001HandleEnded;
         nodes.push(mainSrc);
 
         const lowpassFilter = ctx.createBiquadFilter();
@@ -1029,10 +1029,10 @@ function update() {
         ringFilter.type = 'peaking'; ringFilter.frequency.value = 5200; ringFilter.Q.value = 8; ringFilter.gain.value = 0;
 
         const softShaper = ctx.createWaveShaper();
-        softShaper.curve = an5001DistortionCurve(2); softShaper.oversample = '2x';
+        softShaper.curve = an3001DistortionCurve(2); softShaper.oversample = '2x';
         const hardClipDrive = ctx.createGain(); hardClipDrive.gain.value = 1;
         const hardClipShaper = ctx.createWaveShaper();
-        hardClipShaper.curve = an5001HardClipCurve(); hardClipShaper.oversample = '2x';
+        hardClipShaper.curve = an3001HardClipCurve(); hardClipShaper.oversample = '2x';
 
         const stereoBus = ctx.createGain();
         stereoBus.channelCount = 2; stereoBus.channelCountMode = 'explicit'; stereoBus.channelInterpretation = 'speakers';
@@ -1042,7 +1042,7 @@ function update() {
         const merger = ctx.createChannelMerger(2);
 
         const crushState = { bitDepth: 16, holdFactor: 1 };
-        const bitcrusher = an5001MakeBitcrusher(ctx, crushState);
+        const bitcrusher = an3001MakeBitcrusher(ctx, crushState);
         nodes.push(bitcrusher);
 
         const mainChainGain = ctx.createGain(); mainChainGain.gain.value = 1;
@@ -1066,7 +1066,7 @@ function update() {
         overlayBus.connect(master);
 
         const hissSrc = ctx.createBufferSource();
-        hissSrc.buffer = an5001MakeNoiseBuffer(ctx, 2); hissSrc.loop = true;
+        hissSrc.buffer = an3001MakeNoiseBuffer(ctx, 2); hissSrc.loop = true;
         const hissFilter = ctx.createBiquadFilter();
         hissFilter.type = 'highpass'; hissFilter.frequency.value = 4000;
         const hissGain = ctx.createGain(); hissGain.gain.value = 0.02;
@@ -1080,7 +1080,7 @@ function update() {
         nodes.push(hum1);
 
         const radioSrc = ctx.createBufferSource();
-        radioSrc.buffer = an5001MakeNoiseBuffer(ctx, 2); radioSrc.loop = true;
+        radioSrc.buffer = an3001MakeNoiseBuffer(ctx, 2); radioSrc.loop = true;
         const radioFilter = ctx.createBiquadFilter();
         radioFilter.type = 'bandpass'; radioFilter.Q.value = 8; radioFilter.frequency.value = 1000;
         const radioGain = ctx.createGain(); radioGain.gain.value = 0.02;
@@ -1102,48 +1102,48 @@ function update() {
         };
     }
 
-    window.an5001SetVolume = function(v) {
-        an5001Volume = Math.max(0, Math.min(1, parseFloat(v)));
-        if (an5001Ctx && an5001Live && an5001Live.volumeGain) {
-            an5001Live.volumeGain.gain.setTargetAtTime(an5001Volume, an5001Ctx.currentTime, 0.05);
+    window.an3001SetVolume = function(v) {
+        an3001Volume = Math.max(0, Math.min(1, parseFloat(v)));
+        if (an3001Ctx && an3001Live && an3001Live.volumeGain) {
+            an3001Live.volumeGain.gain.setTargetAtTime(an3001Volume, an3001Ctx.currentTime, 0.05);
         }
     };
 
-    function an5001HandleEnded() {
-        if (audioTimers[AN5001_AUDIO_ID]) { clearTimeout(audioTimers[AN5001_AUDIO_ID]); delete audioTimers[AN5001_AUDIO_ID]; }
-        state.anomalyLogsOpen[AN5001_AUDIO_ID] = false;
-        state.anomalyLogsTyping[AN5001_AUDIO_ID] = null;
-        an5001Stop(false);
+    function an3001HandleEnded() {
+        if (audioTimers[AN3001_AUDIO_ID]) { clearTimeout(audioTimers[AN3001_AUDIO_ID]); delete audioTimers[AN3001_AUDIO_ID]; }
+        state.anomalyLogsOpen[AN3001_AUDIO_ID] = false;
+        state.anomalyLogsTyping[AN3001_AUDIO_ID] = null;
+        an3001Stop(false);
         update();
     }
 
-    function an5001SetInterference(active) {
-        const el = document.getElementById(AN5001_AUDIO_ID + '-interference');
+    function an3001SetInterference(active) {
+        const el = document.getElementById(AN3001_AUDIO_ID + '-interference');
         if (el) el.textContent = active ? '\u26a1 SIGNAL INTERFERENCE - AUDIO DEGRADED' : '';
-        const label = document.getElementById(AN5001_AUDIO_ID + '-statuslabel');
+        const label = document.getElementById(AN3001_AUDIO_ID + '-statuslabel');
         if (label) label.textContent = active ? 'INTERFERENCE' : 'PLAYING';
     }
 
-    function an5001Lerp(a, b, t) {
+    function an3001Lerp(a, b, t) {
         const ct = Math.max(0, Math.min(1, t));
         return a + (b - a) * ct;
     }
 
-    function an5001PhaseProgress() {
-        if (!an5001Ctx || !an5001Live) return 0;
-        const elapsed = an5001Ctx.currentTime - an5001Live.startAt;
-        return Math.max(0, Math.min(1, elapsed / an5001Live.duration));
+    function an3001PhaseProgress() {
+        if (!an3001Ctx || !an3001Live) return 0;
+        const elapsed = an3001Ctx.currentTime - an3001Live.startAt;
+        return Math.max(0, Math.min(1, elapsed / an3001Live.duration));
     }
 
-    function an5001TriggerDropout(p) {
-        const L = an5001Live;
-        if (!an5001Ctx || !L) return;
-        const now = an5001Ctx.currentTime;
+    function an3001TriggerDropout(p) {
+        const L = an3001Live;
+        if (!an3001Ctx || !L) return;
+        const now = an3001Ctx.currentTime;
         const severe = p > 0.8 && Math.random() < 0.4;
         const depth = severe ? (0.9 + Math.random() * 0.1) : (0.2 + p * 0.5 + Math.random() * 0.25);
         const dur = severe ? (0.2 + Math.random() * 0.9) : (0.08 + Math.random() * 0.35);
         const base = L.mainChainGain.gain.value;
-        an5001SetInterference(true);
+        an3001SetInterference(true);
         L.mainChainGain.gain.cancelScheduledValues(now);
         L.mainChainGain.gain.setValueAtTime(base, now);
         L.mainChainGain.gain.linearRampToValueAtTime(Math.max(0.0005, base * (1 - depth)), now + dur * 0.25);
@@ -1153,64 +1153,64 @@ function update() {
         L.radioGain.gain.setValueAtTime(rBase, now);
         L.radioGain.gain.linearRampToValueAtTime(rBase * 3, now + dur * 0.3);
         L.radioGain.gain.linearRampToValueAtTime(rBase, now + dur + 0.1);
-        setTimeout(() => an5001SetInterference(false), dur * 1000 + 100);
+        setTimeout(() => an3001SetInterference(false), dur * 1000 + 100);
     }
 
-    function an5001TriggerReverseFragment() {
-        const L = an5001Live;
-        if (!an5001Ctx || !L || !an5001SourceBuffer) return;
-        const playhead = an5001Ctx.currentTime - L.startAt;
+    function an3001TriggerReverseFragment() {
+        const L = an3001Live;
+        if (!an3001Ctx || !L || !an3001SourceBuffer) return;
+        const playhead = an3001Ctx.currentTime - L.startAt;
         const back = 0.4 + Math.random() * 2.2;
         const dur = 0.25 + Math.random() * 0.9;
-        const slice = an5001ExtractSlice(an5001SourceBuffer, playhead - back - dur, dur, true);
+        const slice = an3001ExtractSlice(an3001SourceBuffer, playhead - back - dur, dur, true);
         if (!slice) return;
-        const now = an5001Ctx.currentTime;
-        const src = an5001Ctx.createBufferSource();
+        const now = an3001Ctx.currentTime;
+        const src = an3001Ctx.createBufferSource();
         src.buffer = slice;
-        const g = an5001Ctx.createGain();
+        const g = an3001Ctx.createGain();
         g.gain.setValueAtTime(0, now);
         g.gain.linearRampToValueAtTime(0.22 + Math.random() * 0.2, now + dur * 0.15);
         g.gain.linearRampToValueAtTime(0, now + dur);
-        const f = an5001Ctx.createBiquadFilter();
+        const f = an3001Ctx.createBiquadFilter();
         f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = 0.7;
         src.connect(f); f.connect(g); g.connect(L.overlayBus);
         src.start(now); src.stop(now + dur + 0.05);
     }
 
-    function an5001TriggerPreEcho() {
-        const L = an5001Live;
-        if (!an5001Ctx || !L || !an5001SourceBuffer) return;
-        const playhead = an5001Ctx.currentTime - L.startAt;
+    function an3001TriggerPreEcho() {
+        const L = an3001Live;
+        if (!an3001Ctx || !L || !an3001SourceBuffer) return;
+        const playhead = an3001Ctx.currentTime - L.startAt;
         const ahead = 0.8 + Math.random() * 3.2;
         const dur = 0.2 + Math.random() * 0.5;
-        const slice = an5001ExtractSlice(an5001SourceBuffer, playhead + ahead, dur, false);
+        const slice = an3001ExtractSlice(an3001SourceBuffer, playhead + ahead, dur, false);
         if (!slice) return;
-        const now = an5001Ctx.currentTime;
-        const src = an5001Ctx.createBufferSource();
+        const now = an3001Ctx.currentTime;
+        const src = an3001Ctx.createBufferSource();
         src.buffer = slice;
-        const g = an5001Ctx.createGain();
+        const g = an3001Ctx.createGain();
         g.gain.setValueAtTime(0, now);
         g.gain.linearRampToValueAtTime(0.1 + Math.random() * 0.12, now + dur * 0.2);
         g.gain.linearRampToValueAtTime(0, now + dur);
-        const f = an5001Ctx.createBiquadFilter();
+        const f = an3001Ctx.createBiquadFilter();
         f.type = 'lowpass'; f.frequency.value = 900;
         src.connect(f); f.connect(g); g.connect(L.overlayBus);
         src.start(now); src.stop(now + dur + 0.05);
     }
 
-    function an5001TriggerMicroLoop() {
-        const L = an5001Live;
-        if (!an5001Ctx || !L || !an5001SourceBuffer) return;
-        const playhead = an5001Ctx.currentTime - L.startAt;
+    function an3001TriggerMicroLoop() {
+        const L = an3001Live;
+        if (!an3001Ctx || !L || !an3001SourceBuffer) return;
+        const playhead = an3001Ctx.currentTime - L.startAt;
         const sliceDur = 0.03 + Math.random() * 0.09;
-        const slice = an5001ExtractSlice(an5001SourceBuffer, playhead - sliceDur * 1.5, sliceDur, false);
+        const slice = an3001ExtractSlice(an3001SourceBuffer, playhead - sliceDur * 1.5, sliceDur, false);
         if (!slice) return;
-        const now = an5001Ctx.currentTime;
+        const now = an3001Ctx.currentTime;
         const reps = 3 + Math.floor(Math.random() * 5);
         const totalDur = sliceDur * reps;
-        const src = an5001Ctx.createBufferSource();
+        const src = an3001Ctx.createBufferSource();
         src.buffer = slice; src.loop = true; src.loopStart = 0; src.loopEnd = slice.duration;
-        const g = an5001Ctx.createGain(); g.gain.value = 0.5;
+        const g = an3001Ctx.createGain(); g.gain.value = 0.5;
         src.connect(g); g.connect(L.overlayBus);
         src.start(now); src.stop(now + totalDur);
         const baseMain = L.mainChainGain.gain.value;
@@ -1221,17 +1221,17 @@ function update() {
         L.mainChainGain.gain.linearRampToValueAtTime(baseMain, now + totalDur + 0.05);
     }
 
-    function an5001TriggerStaticBurst() {
-        const L = an5001Live;
-        if (!an5001Ctx || !L) return;
-        const now = an5001Ctx.currentTime;
+    function an3001TriggerStaticBurst() {
+        const L = an3001Live;
+        if (!an3001Ctx || !L) return;
+        const now = an3001Ctx.currentTime;
         const dur = 0.15 + Math.random() * 0.4;
-        const buf = an5001MakeNoiseBuffer(an5001Ctx, dur);
-        const src = an5001Ctx.createBufferSource();
+        const buf = an3001MakeNoiseBuffer(an3001Ctx, dur);
+        const src = an3001Ctx.createBufferSource();
         src.buffer = buf;
-        const f = an5001Ctx.createBiquadFilter();
+        const f = an3001Ctx.createBiquadFilter();
         f.type = 'bandpass'; f.frequency.value = 800 + Math.random() * 3000; f.Q.value = 1.5;
-        const g = an5001Ctx.createGain();
+        const g = an3001Ctx.createGain();
         g.gain.setValueAtTime(0, now);
         g.gain.linearRampToValueAtTime(0.22 + Math.random() * 0.25, now + 0.02);
         g.gain.linearRampToValueAtTime(0, now + dur);
@@ -1239,10 +1239,10 @@ function update() {
         src.start(now); src.stop(now + dur + 0.02);
     }
 
-    function an5001TriggerPhaseInvert() {
-        const L = an5001Live;
-        if (!an5001Ctx || !L) return;
-        const now = an5001Ctx.currentTime;
+    function an3001TriggerPhaseInvert() {
+        const L = an3001Live;
+        if (!an3001Ctx || !L) return;
+        const now = an3001Ctx.currentTime;
         const dur = 0.15 + Math.random() * 0.6;
         const cur = L.rGain.gain.value;
         L.rGain.gain.cancelScheduledValues(now);
@@ -1251,10 +1251,10 @@ function update() {
         L.rGain.gain.linearRampToValueAtTime(cur, now + dur);
     }
 
-    function an5001TriggerPitchLurch() {
-        const L = an5001Live;
-        if (!an5001Ctx || !L) return;
-        const now = an5001Ctx.currentTime;
+    function an3001TriggerPitchLurch() {
+        const L = an3001Live;
+        if (!an3001Ctx || !L) return;
+        const now = an3001Ctx.currentTime;
         const amt = (Math.random() < 0.5 ? -1 : 1) * (300 + Math.random() * 1100);
         try {
             L.mainSrc.detune.cancelScheduledValues(now);
@@ -1264,21 +1264,21 @@ function update() {
         } catch (e) {}
     }
 
-    function an5001Tick() {
-        const L = an5001Live;
-        if (!an5001Ctx || !L) return;
-        const p = an5001PhaseProgress();
-        const now = an5001Ctx.currentTime;
+    function an3001Tick() {
+        const L = an3001Live;
+        if (!an3001Ctx || !L) return;
+        const p = an3001PhaseProgress();
+        const now = an3001Ctx.currentTime;
 
-        const lowpassFreq = an5001Lerp(11000, 900, p);
-        const ringGainDb = an5001Lerp(0, 15, Math.max(0, p - 0.15) / 0.85);
-        const driveAmt = an5001Lerp(2, 20, Math.max(0, p - 0.35) / 0.65);
-        const clipDrive = 1 + an5001Lerp(0, 6, Math.max(0, p - 0.35) / 0.65);
-        const wowDepth = an5001Lerp(15, 85, p);
-        const flutterDepth = an5001Lerp(4, 40, p);
-        const hissLvl = an5001Lerp(0.02, 0.07, p);
-        const radioBase = an5001Lerp(0.02, 0.11, p);
-        const imbalance = an5001Lerp(0, 0.55, Math.max(0, p - 0.35) / 0.65);
+        const lowpassFreq = an3001Lerp(11000, 900, p);
+        const ringGainDb = an3001Lerp(0, 15, Math.max(0, p - 0.15) / 0.85);
+        const driveAmt = an3001Lerp(2, 20, Math.max(0, p - 0.35) / 0.65);
+        const clipDrive = 1 + an3001Lerp(0, 6, Math.max(0, p - 0.35) / 0.65);
+        const wowDepth = an3001Lerp(15, 85, p);
+        const flutterDepth = an3001Lerp(4, 40, p);
+        const hissLvl = an3001Lerp(0.02, 0.07, p);
+        const radioBase = an3001Lerp(0.02, 0.11, p);
+        const imbalance = an3001Lerp(0, 0.55, Math.max(0, p - 0.35) / 0.65);
         const bias = Math.sin(now * 0.13);
 
         L.lowpassFilter.frequency.setTargetAtTime(lowpassFreq, now, 0.3);
@@ -1290,51 +1290,51 @@ function update() {
         L.radioGain.gain.setTargetAtTime(radioBase, now, 0.5);
         L.lGain.gain.setTargetAtTime(1 - Math.max(0, bias) * imbalance, now, 0.6);
         L.rGain.gain.setTargetAtTime(1 - Math.max(0, -bias) * imbalance, now, 0.6);
-        L.crushState.bitDepth = p < 0.35 ? 16 : an5001Lerp(14, 3, (p - 0.35) / 0.65);
-        L.crushState.holdFactor = p < 0.35 ? 1 : an5001Lerp(1, 9, (p - 0.35) / 0.65);
+        L.crushState.bitDepth = p < 0.35 ? 16 : an3001Lerp(14, 3, (p - 0.35) / 0.65);
+        L.crushState.holdFactor = p < 0.35 ? 1 : an3001Lerp(1, 9, (p - 0.35) / 0.65);
 
         if (Math.abs(driveAmt - L._lastDrive || 0) > 1) {
-            L.softShaper.curve = an5001DistortionCurve(driveAmt);
+            L.softShaper.curve = an3001DistortionCurve(driveAmt);
             L._lastDrive = driveAmt;
         }
 
         const unpredict = p * p;
-        if (p > 0.15 && Math.random() < 0.02 + unpredict * 0.15) an5001TriggerReverseFragment();
-        if (p > 0.55 && Math.random() < 0.015 + unpredict * 0.18) an5001TriggerPreEcho();
-        if (p > 0.35 && Math.random() < 0.015 + unpredict * 0.15) an5001TriggerMicroLoop();
-        if (p > 0.55 && Math.random() < 0.01 + unpredict * 0.2) an5001TriggerStaticBurst();
-        if (p > 0.35 && Math.random() < 0.012 + unpredict * 0.15) an5001TriggerPhaseInvert();
-        if (p > 0.55 && Math.random() < 0.01 + unpredict * 0.12) an5001TriggerPitchLurch();
-        if (Math.random() < 0.01 + unpredict * 0.2) an5001TriggerDropout(p);
+        if (p > 0.15 && Math.random() < 0.02 + unpredict * 0.15) an3001TriggerReverseFragment();
+        if (p > 0.55 && Math.random() < 0.015 + unpredict * 0.18) an3001TriggerPreEcho();
+        if (p > 0.35 && Math.random() < 0.015 + unpredict * 0.15) an3001TriggerMicroLoop();
+        if (p > 0.55 && Math.random() < 0.01 + unpredict * 0.2) an3001TriggerStaticBurst();
+        if (p > 0.35 && Math.random() < 0.012 + unpredict * 0.15) an3001TriggerPhaseInvert();
+        if (p > 0.55 && Math.random() < 0.01 + unpredict * 0.12) an3001TriggerPitchLurch();
+        if (Math.random() < 0.01 + unpredict * 0.2) an3001TriggerDropout(p);
     }
 
-    function an5001ScheduleBeep() {
-        if (!an5001Ctx) return;
+    function an3001ScheduleBeep() {
+        if (!an3001Ctx) return;
         const delay = 3500 + Math.random() * 5000;
-        an5001BeepTimer = setTimeout(() => {
-            if (!an5001Ctx || !an5001Live) return;
-            const now = an5001Ctx.currentTime;
-            const osc = an5001Ctx.createOscillator();
+        an3001BeepTimer = setTimeout(() => {
+            if (!an3001Ctx || !an3001Live) return;
+            const now = an3001Ctx.currentTime;
+            const osc = an3001Ctx.createOscillator();
             osc.type = 'sine'; osc.frequency.value = 650 + Math.random() * 900;
-            const g = an5001Ctx.createGain();
+            const g = an3001Ctx.createGain();
             g.gain.setValueAtTime(0, now);
             g.gain.linearRampToValueAtTime(0.045, now + 0.008);
             g.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
-            osc.connect(g); g.connect(an5001Live.master);
+            osc.connect(g); g.connect(an3001Live.master);
             osc.start(now); osc.stop(now + 0.2);
-            an5001ScheduleBeep();
+            an3001ScheduleBeep();
         }, delay);
     }
 
-    function an5001Draw() {
-        const canvas = document.getElementById(AN5001_AUDIO_ID + '-canvas');
+    function an3001Draw() {
+        const canvas = document.getElementById(AN3001_AUDIO_ID + '-canvas');
         if (canvas) {
             const c = canvas.getContext('2d');
             const w = canvas.width, h = canvas.height;
             c.fillStyle = '#000'; c.fillRect(0, 0, w, h);
-            if (an5001Analyser) {
-                const data = new Uint8Array(an5001Analyser.frequencyBinCount);
-                an5001Analyser.getByteFrequencyData(data);
+            if (an3001Analyser) {
+                const data = new Uint8Array(an3001Analyser.frequencyBinCount);
+                an3001Analyser.getByteFrequencyData(data);
                 const barCount = Math.min(48, data.length);
                 const barW = w / barCount;
                 for (let i = 0; i < barCount; i++) {
@@ -1347,32 +1347,32 @@ function update() {
                 c.globalAlpha = 1;
             }
         }
-        an5001RafId = requestAnimationFrame(an5001Draw);
+        an3001RafId = requestAnimationFrame(an3001Draw);
     }
 
-    async function an5001Start() {
-        if (!an5001Ctx) an5001Ctx = new (window.AudioContext || window.webkitAudioContext)();
-        if (an5001Ctx.state === 'suspended') an5001Ctx.resume();
-        an5001Stop(true);
-        const built = await an5001BuildGraph(an5001Ctx);
-        an5001Live = built;
-        an5001Analyser = built.analyser;
+    async function an3001Start() {
+        if (!an3001Ctx) an3001Ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (an3001Ctx.state === 'suspended') an3001Ctx.resume();
+        an3001Stop(true);
+        const built = await an3001BuildGraph(an3001Ctx);
+        an3001Live = built;
+        an3001Analyser = built.analyser;
 
-        const now = an5001Ctx.currentTime;
+        const now = an3001Ctx.currentTime;
         built.master.gain.cancelScheduledValues(now);
         built.master.gain.setValueAtTime(0.0001, now);
         built.master.gain.exponentialRampToValueAtTime(0.5, now + 1.1);
 
-        an5001ScheduleBeep();
-        clearInterval(an5001TickTimer);
-        an5001TickTimer = setInterval(an5001Tick, 180);
-        if (!an5001RafId) an5001Draw();
+        an3001ScheduleBeep();
+        clearInterval(an3001TickTimer);
+        an3001TickTimer = setInterval(an3001Tick, 180);
+        if (!an3001RafId) an3001Draw();
     }
 
-    function an5001Stop(silent) {
-        clearTimeout(an5001BeepTimer);
-        clearInterval(an5001TickTimer);
-        const ctx = an5001Ctx, L = an5001Live;
+    function an3001Stop(silent) {
+        clearTimeout(an3001BeepTimer);
+        clearInterval(an3001TickTimer);
+        const ctx = an3001Ctx, L = an3001Live;
         if (L && ctx) {
             const now = ctx.currentTime;
             try {
@@ -1381,10 +1381,10 @@ function update() {
                 L.master.gain.exponentialRampToValueAtTime(0.0001, now + (silent ? 0.01 : 0.4));
             } catch (e) {}
         }
-        an5001Live = null;
+        an3001Live = null;
         if (!silent) {
-            an5001SetInterference(false);
-            setTimeout(() => { an5001Analyser = null; }, 450);
+            an3001SetInterference(false);
+            setTimeout(() => { an3001Analyser = null; }, 450);
         }
         if (L) {
             setTimeout(() => {
@@ -1400,8 +1400,8 @@ function update() {
         const wasPlaying = !!state.anomalyLogsOpen[id];
         toggleAnomalyLog(id);
         const isPlayingNow = !!state.anomalyLogsOpen[id];
-        if (isPlayingNow && !wasPlaying) an5001Start();
-        if (!isPlayingNow && wasPlaying) an5001Stop(false);
+        if (isPlayingNow && !wasPlaying) an3001Start();
+        if (!isPlayingNow && wasPlaying) an3001Stop(false);
     };
 
     function renderNorthstarAudioLog(logId, opts) {
@@ -1412,7 +1412,7 @@ function update() {
         const progress = Math.min(state.anomalyLogsProgress[logId] || 0, total);
         const started = progress > 0 || isPlaying || !!typing;
         const finished = progress >= total && !typing;
-        const isHoldingAtEnd = logId === AN5001_AUDIO_ID && isPlaying && finished && !!an5001Live;
+        const isHoldingAtEnd = logId === AN3001_AUDIO_ID && isPlaying && finished && !!an3001Live;
         const isWaiting = isPlaying && !typing && !finished;
         const seed = seedFromString(logId);
 
@@ -1462,8 +1462,8 @@ function update() {
             </div>
             <div class="flex items-center gap-2 mb-1 px-0.5">
                 <i data-lucide="volume-2" class="w-3 h-3 text-[var(--color-cyan-dim)] shrink-0"></i>
-                <input type="range" min="0" max="100" value="${Math.round(an5001Volume * 100)}" oninput="an5001SetVolume(this.value/100)" class="flex-1" style="accent-color:var(--color-cyan);height:3px;">
-                <span class="text-[8px] text-[var(--color-text-dim)] font-mono-tech w-7 text-right">${Math.round(an5001Volume * 100)}%</span>
+                <input type="range" min="0" max="100" value="${Math.round(an3001Volume * 100)}" oninput="an3001SetVolume(this.value/100)" class="flex-1" style="accent-color:var(--color-cyan);height:3px;">
+                <span class="text-[8px] text-[var(--color-text-dim)] font-mono-tech w-7 text-right">${Math.round(an3001Volume * 100)}%</span>
             </div>
             <div id="${logId}-interference" class="text-[8px] text-center uppercase tracking-widest mb-2 h-3" style="color:var(--color-red);letter-spacing:.12em;"></div>
             <div class="border-t border-[var(--color-panel-border)] pt-2">
@@ -1692,7 +1692,7 @@ function update() {
             delete audioTimers[id];
             state.anomalyLogsOpen[id] = false;
         });
-        an5001Stop(false);
+        an3001Stop(false);
     }
     window.setAnomalySection = function(id) {
         stopAllCassettes();
@@ -1731,7 +1731,7 @@ function update() {
             if (!typing) {
                 const lineIdx = state.anomalyLogsProgress[id] || 0;
                 if (lineIdx >= lines.length) {
-                    if (id === AN5001_AUDIO_ID && an5001Live) { return; }
+                    if (id === AN3001_AUDIO_ID && an3001Live) { return; }
                     state.anomalyLogsOpen[id] = false;
                     update();
                     return;
@@ -1754,7 +1754,7 @@ function update() {
             update();
             followIfBottom(wasAtBottom);
             if (state.anomalyLogsProgress[id] >= lines.length) {
-                if (id === AN5001_AUDIO_ID && an5001Live) { return; }
+                if (id === AN3001_AUDIO_ID && an3001Live) { return; }
                 state.anomalyLogsOpen[id] = false;
                 update();
                 return;
