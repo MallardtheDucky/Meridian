@@ -271,15 +271,15 @@ const DB_TIER_LABELS = {
     const DB_ANOMALIES = [
         { class: 'Class 1', limit: 'Unlimited', items: [] },
         { class: 'Class 2', limit: '0 / 5', items: [] },
-        { class: 'Class 3', limit: '0 / 3', items: [] },
-        { class: 'Class 4', limit: '0 / 2', items: [] },
-        { class: 'Class 5', limit: '1 / 1', items: [
+        { class: 'Class 3', limit: '1 / 3', items: [
             {
-                id: 'AN-5-001', name: 'NORTHSTAR', file: 'anomaly-an5001',
+                id: 'AN-3-001', name: 'NORTHSTAR', file: 'anomaly-an3001',
                 desc: 'A 118-meter former Commission research vessel recovered beneath 2.7 kilometers of ice in northern Greenland, August 2032. Built around an experimental interaction system informally designated the Transit Core. No crew, remains, or biological material were recovered aboard.',
                 containment: 'Streymoy HQ - Deep Vault, subterranean research chamber (constructed August 2032)'
             }
         ] },
+        { class: 'Class 4', limit: '0 / 2', items: [] },
+        { class: 'Class 5', limit: '0 / 1', items: [] },
         { class: 'Class 6', limit: '0 / 1', items: [] }
     ];
 
@@ -626,7 +626,7 @@ const DB_TIER_LABELS = {
             { id: 'messages', title: 'COMMS_RELAY', icon: 'mail', x: 200, y: 120, w: 600, h: 400, open: false, maximized: false, zIndex: 4 },
             { id: 'registry', title: 'ANOMALY_REGISTRY', icon: 'microscope', x: 250, y: 150, w: 850, h: 550, open: false, maximized: false, zIndex: 5 },
             { id: 'ranks', title: 'CHAIN_OF_COMMAND', icon: 'users', x: 300, y: 70, w: 950, h: 650, open: true, maximized: false, zIndex: 6 },
-            { id: 'anomaly-an5001', title: 'AN-5-001 :: NORTHSTAR', icon: 'ship', x: 120, y: 40, w: 1000, h: 680, open: false, maximized: false, zIndex: 7, hidden: true }
+            { id: 'anomaly-an3001', title: 'AN-3-001 :: NORTHSTAR', icon: 'ship', x: 120, y: 40, w: 1000, h: 680, open: false, maximized: false, zIndex: 7, hidden: true }
         ],
         highestZ: 10,
         dragState: null,
