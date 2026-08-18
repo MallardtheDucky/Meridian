@@ -38,9 +38,12 @@ const DB_AN3001_SECTIONS = [
             <div class="tech-border bg-[var(--color-panel)] p-3"><div class="text-[9px] text-[var(--color-cyan-dim)] uppercase tracking-widest mb-1">Location</div><div class="text-sm font-bold text-white">Streymoy HQ</div></div>
             <div class="tech-border bg-[var(--color-panel)] p-3"><div class="text-[9px] text-[var(--color-cyan-dim)] uppercase tracking-widest mb-1">Status</div><div class="text-sm font-bold text-[var(--color-cyan)]">Active Research</div></div>
         </div>
+        <div class="tech-border bg-[var(--color-panel)] p-3 mt-3">
+            <img src="images/an3001-hull.jpg" alt="AN-3-001 NORTHSTAR hull, Greenland recovery site" class="w-full h-auto block" style="max-height:420px; object-fit:cover;" onerror="this.closest('.tech-border').style.display='none';">
+        </div>
         <div class="tech-border bg-[var(--color-panel)] p-3 mt-3 flex items-center gap-3">
             <i data-lucide="image-off" class="w-8 h-8 text-[var(--color-panel-border)] shrink-0"></i>
-            <div class="text-[10px] text-[var(--color-text-dim)]">PHOTOGRAPHIC DOCUMENTATION: PENDING. Expedition imaging team clearance for hull and interior photography is pending Council review; recovered helmet-camera stills remain restricted to Historical Archives pending redaction pass.</div>
+            <div class="text-[10px] text-[var(--color-text-dim)]">ADDITIONAL PHOTOGRAPHIC DOCUMENTATION: PENDING. Expedition imaging team clearance for interior photography is pending Council review; recovered helmet-camera stills remain restricted to Historical Archives pending redaction pass.</div>
         </div>
         <div class="tech-border bg-[var(--color-panel)] p-3 mt-3 flex items-center gap-3 border-[var(--color-red)]">
             <i data-lucide="lock" class="w-8 h-8 text-[var(--color-red)] shrink-0"></i>
